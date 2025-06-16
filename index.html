@@ -172,6 +172,7 @@
       const reader = new FileReader();
       reader.onload = function (e) {
         const lines = e.target.result.split("\n");
+        console.log(lines);
         const nums = lines
           .slice(1)
           .map(line => line.split(",")[2]?.trim())
