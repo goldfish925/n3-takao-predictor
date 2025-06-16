@@ -192,8 +192,18 @@
       };
       reader.readAsText(file);
     }
+    <body>
+  <h2>ナンバーズ3 風車順スライド予測</h2>
 
-    
+  <input type="file" id="csvFile" accept=".csv" />
+  <button id="predictButton">予想する</button>
+
+  <p id="result"></p>
+  <ul id="recommendations"></ul>
+
+  <script>
+    document.getElementById("predictButton").addEventListener("click", predict);
+     
   </script>
 </body>
 </html>
