@@ -90,7 +90,7 @@
   </div>
   <div class="input-row">
     <input type="file" id="csvFile" accept=".csv,.txt" />
-    <button id="predictButton">予想</button>
+    
   </div>
   <div id="result">ここに予測が表示されるよ</div>
   <ul id="recommendations"></ul>
@@ -160,10 +160,11 @@
       reader.onload = function (e) {
         const lines = e.target.result.split("\n");
         const nums = lines
-  .slice(1)  // ←ここ追加
-  .map(line => line.split(",")[2])
+  .slice(1) // ← これで1行目スキップ
+  .map(line => line.split(",")[2]?.trim())
   .filter(n => n && /^\d{3}$/.test(n))
   .slice(-21);
+
 
 
         if (nums.length < 2) {
