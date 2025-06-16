@@ -89,6 +89,8 @@ th {
   <h1>NUMBERS3</h1>
   <div class="center">
     <img src="cat5.png" alt/>
+    <link rel="icon" href="cat5.png" />
+
       </div>
   <div class="input-row">
     <input type="file" id="csvFile" accept=".csv,.txt" />
@@ -100,8 +102,9 @@ th {
   <div id="table-container"></div> 
   
   <script>
-  document.getElementById('predictButton').addEventListener('click', predict);
-
+  document.getElementById('predictButton').addEventListener('click', function() {
+  document.getElementById("csvFile").dispatchEvent(new Event("change"));
+});
     const wheel100 = "0123456789";
 const wheel10 = "0741852963";
 const wheel1 = "0987654321";
