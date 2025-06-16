@@ -97,6 +97,21 @@
   <div id="details"></div>
   <div id="table-container"></div> 
 
+  <!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ナンバーズ3予測</title>
+</head>
+<body>
+  <h2>ナンバーズ3 風車順スライド予測</h2>
+
+  <input type="file" id="csvFile" accept=".csv" />
+  <button id="predictButton">予想する</button>
+
+  <p id="result"></p>
+  <ul id="recommendations"></ul>
+
   <script>
     const wheel100 = "0123456789";
     const wheel10 = "0741852963";
@@ -148,24 +163,22 @@
       ].join("");
     }
 
-    // ここが「予想」ボタンを押したときに動く関数です
     function predict() {
       const input = document.getElementById("csvFile");
       if (!input.files[0]) {
         alert("まずはCSVファイルを選択してください！");
         return;
       }
+
       const file = input.files[0];
       const reader = new FileReader();
       reader.onload = function (e) {
         const lines = e.target.result.split("\n");
         const nums = lines
-  .slice(1) // ← これで1行目スキップ
-  .map(line => line.split(",")[2]?.trim())
-  .filter(n => n && /^\d{3}$/.test(n))
-  .slice(-21);
-
-
+          .slice(1)
+          .map(line => line.split(",")[2]?.trim())
+          .filter(n => n && /^\d{3}$/.test(n))
+          .slice(-21);
 
         if (nums.length < 2) {
           alert("有効なデータが不足しています。CSVファイルの内容を確認してください。");
@@ -192,18 +205,11 @@
       };
       reader.readAsText(file);
     }
-    <body>
-  <h2>ナンバーズ3 風車順スライド予測</h2>
 
-  <input type="file" id="csvFile" accept=".csv" />
-  <button id="predictButton">予想する</button>
-
-  <p id="result"></p>
-  <ul id="recommendations"></ul>
-
-  <script>
     document.getElementById("predictButton").addEventListener("click", predict);
-     
   </script>
+</body>
+</html>
+
 </body>
 </html>
