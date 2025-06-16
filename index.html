@@ -161,35 +161,53 @@
       ].join("");
     }
 
-    function predict() {
-      const input = document.getElementById("csvFile");
-      if (!input.files[0]) {
-        alert("まずはCSVファイルを選択してください！");
-        return;
-      }
-
-      const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = function (e) {
-  const lines = e.target.result.split("\n").filter(line => line.trim() !== "");
-
-  const nums = lines
-    .slice(1)
-    .map(line => line.split(",")[2]?.trim())
-    .filter(n => n && /^\d{3}$/.test(n))
-    .slice(-21);
-
-  console.log("抽選数字:", nums);  // ← 確認用
-
-  if (nums.length < 2) {
-    alert("有効なデータが不足しています。CSVファイルの内容を確認してください。");
+   function predict() {
+  const input = document.getElementById("csvFile");
+  if (!input.files[0]) {
+    alert("まずはCSVファイルを選択してください！");
     return;
   }
 
-  // あとは predict 処理のままOK
-};
+  const file = input.files[0];
+  const reader = new FileReader();
 
-reader.readAsText(file, "shift-jis");  // ← ここ変更
+  reader.onload = function (e) {
+    const lines = e.target.result.split("\n").filter(line => line.trim() !== "");
+
+    const nums = lines
+      .slice(1) // ヘッダーを除く
+      .map(line => line.split(",")[2]?.trim())
+      .filter(n => n && /^\d{3}$/.test(n))
+      .slice(-21);
+
+    console.log("抽選数字:", nums);  // ← 確認用
+
+    if (nums.length < 2) {
+      alert("有効なデータが不足しています。CSVファイルの内容を確認してください。");
+      return;
+    }
+
+    const indices = nums.map(toWheelIndex);
+    const diffs = calcDiffs(indices);
+    const counts = countDiffs(diffs);
+    const tops = topDiffs(counts, 3);
+
+    const lastIndex = indices[indices.length - 1];
+    const results = tops.map(diff => reconstructNumber(lastIndex, diff));
+
+    const list = document.getElementById("recommendations");
+    list.innerHTML = "";
+    results.forEach(num => {
+      const li = document.createElement("li");
+      li.textContent = num;
+      list.appendChild(li);
+    });
+
+    document.getElementById("result").textContent = "予想完了！下に表示されます";
+  };
+
+  reader.readAsText(file, "shift-jis");
+}
 
 
         const indices = nums.map(toWheelIndex);
