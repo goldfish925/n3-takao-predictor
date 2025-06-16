@@ -171,18 +171,26 @@
       const file = input.files[0];
       const reader = new FileReader();
       reader.onload = function (e) {
-        const lines = e.target.result.split("\n");
-        console.log(lines);
-        const nums = lines
-          .slice(1)
-          .map(line => line.split(",")[2]?.trim())
-          .filter(n => n && /^\d{3}$/.test(n))
-          .slice(-21);
+  const lines = e.target.result.split("\n").filter(line => line.trim() !== "");
 
-        if (nums.length < 2) {
-          alert("有効なデータが不足しています。CSVファイルの内容を確認してください。");
-          return;
-        }
+  const nums = lines
+    .slice(1)
+    .map(line => line.split(",")[2]?.trim())
+    .filter(n => n && /^\d{3}$/.test(n))
+    .slice(-21);
+
+  console.log("抽選数字:", nums);  // ← 確認用
+
+  if (nums.length < 2) {
+    alert("有効なデータが不足しています。CSVファイルの内容を確認してください。");
+    return;
+  }
+
+  // あとは predict 処理のままOK
+};
+
+reader.readAsText(file, "shift-jis");  // ← ここ変更
+
 
         const indices = nums.map(toWheelIndex);
         const diffs = calcDiffs(indices);
