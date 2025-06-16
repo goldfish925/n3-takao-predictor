@@ -160,9 +160,11 @@
       reader.onload = function (e) {
         const lines = e.target.result.split("\n");
         const nums = lines
-          .map(line => line.split(",")[2])
-          .filter(n => n && /^\d{3}$/.test(n))
-          .slice(-21);
+  .slice(1)  // ←ここ追加
+  .map(line => line.split(",")[2])
+  .filter(n => n && /^\d{3}$/.test(n))
+  .slice(-21);
+
 
         if (nums.length < 2) {
           alert("有効なデータが不足しています。CSVファイルの内容を確認してください。");
