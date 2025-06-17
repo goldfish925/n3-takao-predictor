@@ -101,10 +101,17 @@
     <img src="n3.png" alt="にゃんこ" />
   </div>
   <div class="input-row">
-      <input type="file" id="csvFile" />
-      <button onclick="predict()">予想する</button>
-</div>
+    <input type="file" id="csvFile" accept=".csv" />
+    <button onclick="predict()">予想する</button>
+  </div>
 
+  <p style="font-size: 13px; color: #666;">
+    iPhoneでは「ファイル」アプリからCSVを選択してください
+  </p>
+
+  <div id="result">ここに結果が表示されます</div>
+  <ul id="recommendations"></ul>
+  
 <p id="result"></p>
 <ul id="recommendations"></ul>
 <div id="details"></div>
