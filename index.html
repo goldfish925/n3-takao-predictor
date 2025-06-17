@@ -105,7 +105,7 @@
     <button onclick="predict()">予想する</button>
   </div>
   <p style="font-size: 13px; color: #666;">
-    iPhoneでは「ファイル」アプリからUTF-8形式のCSVを選んでください
+    iPhoneでは「ファイル」アプリからCSV（Shift_JIS形式）を選択してください
   </p>
 
   <div id="result"></div>
@@ -174,7 +174,9 @@
 
       reader.onload = function (e) {
         try {
-          const lines = e.target.result.split("\n").filter(line => line.trim() !== "");
+          const sjisArray = new Uint8Array(e.target.result);
+          const decodedText = new TextDecoder("shift-jis").decode(sjisArray);
+          const lines = decodedText.split("\n").filter(line => line.trim() !== "");
 
           const nums = lines
             .slice(1)
@@ -205,11 +207,11 @@
 
           document.getElementById("result").textContent = "予想完了！下に表示されます";
         } catch (err) {
-          alert("読み込み中にエラーが発生しました。CSVの形式や内容を確認してください。");
+          alert("Shift_JISの読み込みに失敗しました。CSVファイルを確認してください。");
         }
       };
 
-      reader.readAsText(file); // ← iPhone対応（shift-jis指定なし）
+      reader.readAsArrayBuffer(file); // ← Shift_JISデコード用に ArrayBuffer で読み込み
     }
   </script>
 </body>
