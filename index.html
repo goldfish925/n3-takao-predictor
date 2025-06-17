@@ -100,25 +100,18 @@
   <div class="center">
     <img src="n3.png" alt="にゃんこ" />
   </div>
-  <div class="input-row">
+    <div class="input-row">
     <input type="file" id="csvFile" accept=".csv" />
     <button onclick="predict()">予想する</button>
   </div>
-
   <p style="font-size: 13px; color: #666;">
-    iPhoneでは「ファイル」アプリからCSVを選択してください
+    iPhoneでは「ファイル」アプリからUTF-8形式のCSVを選んでください
   </p>
 
-  <div id="result">ここに結果が表示されます</div>
+  <div id="result"></div>
   <ul id="recommendations"></ul>
-  
-<p id="result"></p>
-<ul id="recommendations"></ul>
-<div id="details"></div>
-<div id="table-container"></div>
 
-  
- <script>
+  <script>
     const wheel100 = "0123456789";
     const wheel10 = "0741852963";
     const wheel1 = "0987654321";
@@ -169,7 +162,6 @@
       ].join("");
     }
 
-    // ✅ グローバル関数として定義
     function predict() {
       const input = document.getElementById("csvFile");
       if (!input.files[0]) {
@@ -181,44 +173,44 @@
       const reader = new FileReader();
 
       reader.onload = function (e) {
-  try {
-    const lines = e.target.result.split("\n").filter(line => line.trim() !== "");
+        try {
+          const lines = e.target.result.split("\n").filter(line => line.trim() !== "");
 
-    const nums = lines
-      .slice(1)
-      .map(line => line.split(",")[2]?.trim())
-      .filter(n => n && /^\d{3}$/.test(n))
-      .slice(-21);
+          const nums = lines
+            .slice(1)
+            .map(line => line.split(",")[2]?.trim())
+            .filter(n => n && /^\d{3}$/.test(n))
+            .slice(-21);
 
-    if (nums.length < 2) {
-      alert("有効なデータが不足しています。CSVファイルの内容を確認してください。");
-      return;
+          if (nums.length < 2) {
+            alert("有効なデータが不足しています。CSVファイルの内容を確認してください。");
+            return;
+          }
+
+          const indices = nums.map(toWheelIndex);
+          const diffs = calcDiffs(indices);
+          const counts = countDiffs(diffs);
+          const tops = topDiffs(counts, 3);
+
+          const lastIndex = indices[indices.length - 1];
+          const results = tops.map(diff => reconstructNumber(lastIndex, diff));
+
+          const list = document.getElementById("recommendations");
+          list.innerHTML = "";
+          results.forEach(num => {
+            const li = document.createElement("li");
+            li.textContent = num;
+            list.appendChild(li);
+          });
+
+          document.getElementById("result").textContent = "予想完了！下に表示されます";
+        } catch (err) {
+          alert("読み込み中にエラーが発生しました。CSVの形式や内容を確認してください。");
+        }
+      };
+
+      reader.readAsText(file); // ← iPhone対応（shift-jis指定なし）
     }
-
-    const indices = nums.map(toWheelIndex);
-    const diffs = calcDiffs(indices);
-    const counts = countDiffs(diffs);
-    const tops = topDiffs(counts, 3);
-
-    const lastIndex = indices[indices.length - 1];
-    const results = tops.map(diff => reconstructNumber(lastIndex, diff));
-
-    const list = document.getElementById("recommendations");
-    list.innerHTML = "";
-    results.forEach(num => {
-      const li = document.createElement("li");
-      li.textContent = num;
-      list.appendChild(li);
-    });
-
-    document.getElementById("result").textContent = "予想完了！下に表示されます";
-  } catch (err) {
-    alert("読み込み中にエラーが発生しました。CSVの形式や内容を確認してください。");
-  }
-};
-
-reader.readAsText(file); // ← iPhone対応：shift-jis指定をやめる
-
   </script>
 </body>
 </html>
