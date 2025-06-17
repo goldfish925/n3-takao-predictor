@@ -181,45 +181,44 @@
       const reader = new FileReader();
 
       reader.onload = function (e) {
-        const lines = e.target.result.split("\n").filter(line => line.trim() !== "");
+  try {
+    const lines = e.target.result.split("\n").filter(line => line.trim() !== "");
 
-        const nums = lines
-          .slice(1)
-          .map(line => {
-            const cols = line.split(",");
-            const raw = cols[2]?.trim();
-            if (!raw || !/^\d{1,3}$/.test(raw)) return null;
-            return raw.padStart(3, '0');
-          })
-          .filter(n => n)
-          .slice(-21);
+    const nums = lines
+      .slice(1)
+      .map(line => line.split(",")[2]?.trim())
+      .filter(n => n && /^\d{3}$/.test(n))
+      .slice(-21);
 
-        if (nums.length < 2) {
-          alert("有効なデータが不足しています。CSVファイルの内容を確認してください。");
-          return;
-        }
-
-        const indices = nums.map(toWheelIndex);
-        const diffs = calcDiffs(indices);
-        const counts = countDiffs(diffs);
-        const tops = topDiffs(counts, 3);
-
-        const lastIndex = indices[indices.length - 1];
-        const results = tops.map(diff => reconstructNumber(lastIndex, diff));
-
-        const list = document.getElementById("recommendations");
-        list.innerHTML = "";
-        results.forEach(num => {
-          const li = document.createElement("li");
-          li.textContent = num;
-          list.appendChild(li);
-        });
-
-        document.getElementById("result").textContent = "予想完了！下に表示されます";
-      };
-
-      reader.readAsText(file, "shift-jis");
+    if (nums.length < 2) {
+      alert("有効なデータが不足しています。CSVファイルの内容を確認してください。");
+      return;
     }
+
+    const indices = nums.map(toWheelIndex);
+    const diffs = calcDiffs(indices);
+    const counts = countDiffs(diffs);
+    const tops = topDiffs(counts, 3);
+
+    const lastIndex = indices[indices.length - 1];
+    const results = tops.map(diff => reconstructNumber(lastIndex, diff));
+
+    const list = document.getElementById("recommendations");
+    list.innerHTML = "";
+    results.forEach(num => {
+      const li = document.createElement("li");
+      li.textContent = num;
+      list.appendChild(li);
+    });
+
+    document.getElementById("result").textContent = "予想完了！下に表示されます";
+  } catch (err) {
+    alert("読み込み中にエラーが発生しました。CSVの形式や内容を確認してください。");
+  }
+};
+
+reader.readAsText(file); // ← iPhone対応：shift-jis指定をやめる
+
   </script>
 </body>
 </html>
