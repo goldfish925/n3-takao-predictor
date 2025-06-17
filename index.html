@@ -102,30 +102,15 @@
   </div>
   <div class="input-row">
       <input type="file" id="csvFile" />
-      <button onclick="predict()">予測する</button>
+      <button onclick="predict()">予想する</button>
 </div>
 
 <p id="result"></p>
 <ul id="recommendations"></ul>
 <div id="details"></div>
 <div id="table-container"></div>
-
-       
-  </div>
-  
-  <ul id="recommendations"></ul>
-  <div id="details"></div>
-  <div id="table-container"></div> 
-
-  <div class="input-row">
-  <input type="file" id="csvFile" accept=".csv" />
-  <button onclick="predict()">予測する</button>
-</div>
-<p style="font-size: 13px; color: #666;">
-  iPhoneでは「ファイル」アプリからCSVを選択してください
-</p>
-
-  
+     
+    
  <script>
     const wheel100 = "0123456789";
     const wheel10 = "0741852963";
@@ -222,6 +207,22 @@
 
       reader.readAsText(file, "shift-jis");
     }
+
+   const parseNumbers3CSV = (csvText) => {
+  const lines = csvText.split('\n').filter(line => line.trim() !== '');
+  const rows = lines.slice(1).map(line => line.split(','));
+
+  return rows.map(row => {
+    const date = row[1].trim(); // 開催日
+    const number = row[2].trim(); // 抽選数字
+    return {
+      date,
+      number: number.padStart(3, '0') // "191" → "191", "40" → "040"
+    };
+  });
+};
+
+   
   </script>
 </body>
 </html>
